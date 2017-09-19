@@ -24,7 +24,7 @@ public:
 	void setVitesse(float vitesse);
 	glm::vec3 getPointCible();
 	glm::vec3 getPosition();
-
+	void cancelMove();
 private:
 
 	float m_phi;
@@ -35,6 +35,7 @@ private:
 	glm::vec3 m_deplacementLateral;
 
 	glm::vec3 m_position;
+	glm::vec3 m_positionPrevious;
 	glm::vec3 m_pointCible;
 
 	float m_sensibilite;

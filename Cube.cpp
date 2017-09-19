@@ -139,6 +139,6 @@ void Cube::setType(int type)
 
 void Cube::setCoordonner(glm::vec3 coordonner)
 {
-	m_coordonner = vec3(round(coordonner.x), round(coordonner.y), round(coordonner.z));
+	m_coordonner = vec3((int)(coordonner.x), (int)(coordonner.y), (int)(coordonner.z));
 }
 

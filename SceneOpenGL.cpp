@@ -141,7 +141,7 @@ void SceneOpenGL::bouclePrincipale()
 
 	// Caméra mobile
 
-	Camera camera = Camera(vec3(0, 31, 0), vec3(1, 31, 1), vec3(0, 1, 0), 0.2f, 0.1f);
+	Camera camera = Camera(vec3(0, 32, 0), vec3(1, 31, 1), vec3(0, 1, 0), 0.2f, 0.1f);
 	m_input.afficherPointeur(false);
 	m_input.capturerPointeur(true);
 
@@ -169,37 +169,40 @@ void SceneOpenGL::bouclePrincipale()
 
 		camera.deplacer(m_input);
 		camera.lookAt(modelview);
-
-		vec3 vecteur =normalize(camera.getPointCible() - camera.getPosition());
-		
-		
-		
-		vec3 distance = camera.getPosition()+vecteur ;
-
-		std::cout << "coordonner x : " << distance.x << " y : " << distance.y << " z : " << distance.z << std::endl;
-		cube2.setCoordonner(distance);
-		if (m_input.getBoutonUpSouris(1))
-		{
-
-			for (int i = 0; i < 5; i += 0.5) {
-				if (chunk.getCubeAt(camera.getPosition() + vecteur*vec3(i, i, i))->getType() != TYPE_AIR) {
-
-				}
-			}
-			
-			std::cout << "coordonner x : "<<distance.x<<" y : "<< distance.y<<" z : "<< distance.z << std::endl;
-			chunk.removeBlock(distance);
-			 
+		if (chunk.getCubeAt(vec3(camera.getPosition().x, camera.getPosition().y-1, camera.getPosition().z))->getType() != TYPE_AIR) {
+			camera.cancelMove();
 		}
+		
 		// Nettoyage de l'écran
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
+		vec3 vecteur = normalize(camera.getPointCible() - camera.getPosition());
+
+
+
+		vec3 distance = camera.getPosition() + vecteur;
+		vec3 tempo;
+		for (float i = 0; i < 5; i= i+0.5f) {
+			 tempo = camera.getPosition() + vecteur*vec3(i, i, i);
+			if ((chunk.getCubeAt(tempo)->getType()) != TYPE_AIR && (chunk.getCubeAt(camera.getPosition() + vecteur*vec3(i, i, i))->getType()) != -2) {
+				cube2.setCoordonner(tempo);
+				cube2.afficher(projection, modelview);
+				break;
+			}
+		}
+
+		if (m_input.getBoutonUpSouris(1))
+		{
+
+			std::cout << "coordonner x : " << distance.x << " y : " << distance.y << " z : " << distance.z << std::endl;
+			chunk.removeBlock(tempo);
+
+		}
 
 
 		//cube.afficher(projection, modelview);
-		cube2.afficher(projection, modelview);
+		//cube2.afficher(projection, modelview);
 		chunk.afficher(projection, modelview);
 		// Désactivation du shader
 

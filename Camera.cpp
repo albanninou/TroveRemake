@@ -102,7 +102,7 @@ void Camera::orienter(int xRel, int yRel)
 void Camera::deplacer(Input const &input)
 {
 	// Gestion de l'orientation
-
+	m_positionPrevious = m_position;
 	if (input.mouvementSouris())
 		orienter(input.getXRel(), input.getYRel());
 
@@ -111,7 +111,18 @@ void Camera::deplacer(Input const &input)
 
 	if (input.getTouche(SDL_SCANCODE_UP) || input.getTouche(SDL_SCANCODE_W))
 	{
-		m_position = m_position + m_orientation * m_vitesse;
+		m_position = m_position + vec3(m_orientation.x,0, m_orientation.z) * m_vitesse;
+		m_pointCible = m_position + m_orientation;
+	}
+
+	if (input.getTouche(SDL_SCANCODE_SPACE))
+	{
+		m_position = m_position + vec3(0, 1, 0) * m_vitesse;
+		m_pointCible = m_position + m_orientation;
+	}
+	if (input.getTouche(SDL_SCANCODE_LSHIFT))
+	{
+		m_position = m_position + vec3(0, -1, 0) * m_vitesse;
 		m_pointCible = m_position + m_orientation;
 	}
 
@@ -120,7 +131,7 @@ void Camera::deplacer(Input const &input)
 
 	if (input.getTouche(SDL_SCANCODE_DOWN) || input.getTouche(SDL_SCANCODE_S))
 	{
-		m_position = m_position - m_orientation * m_vitesse;
+		m_position = m_position - vec3(m_orientation.x, 0, m_orientation.z) * m_vitesse;
 		m_pointCible = m_position + m_orientation;
 	}
 
@@ -256,4 +267,9 @@ glm::vec3 Camera::getPointCible()
 glm::vec3 Camera::getPosition()
 {
 	return m_position;
+}
+
+void Camera::cancelMove()
+{
+	m_position = m_positionPrevious;
 }
