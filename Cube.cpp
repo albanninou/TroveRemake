@@ -49,12 +49,16 @@ Cube::Cube(vec3 coordonner, std::string const texture) :Model(1,coordonner)
 	
 }
 
-Cube::Cube(vec3 coordonner, int const texture) :Model(1, coordonner)
+Cube::Cube(vec3 coordonner, int const type) :Model(1, coordonner)
 {
+	m_type = type;
 	if (m_shader.getProgramID() == 0) {
 		m_shader.charger();
 	}
-	m_texture = getTexture(texture);
+	if (type != TYPE_AIR) {
+		m_texture = getTexture(type);
+	}
+	m_coordonner = vec3(round(coordonner.x), round(coordonner.y), round(coordonner.z));
 }
 
 Cube::Cube():Model()
@@ -64,6 +68,7 @@ Cube::Cube():Model()
 	}
 	m_texture = new Texture("Textures/error.jpg");
 	m_texture->charger();
+	m_type = -2;
 }
 
 
@@ -76,7 +81,7 @@ Cube::~Cube()
 void Cube::afficher(glm::mat4 &projection, glm::mat4 &modelview)
 {
 	// Activation du shader
-
+	if (m_type == TYPE_AIR) return;
 	glUseProgram(m_shader.getProgramID());
 
 
@@ -120,5 +125,20 @@ void Cube::afficher(glm::mat4 &projection, glm::mat4 &modelview)
 	// Désactivation du shader
 
 	glUseProgram(0);
+}
+
+int Cube::getType()
+{
+	return m_type;
+}
+
+void Cube::setType(int type)
+{
+	m_type = type;
+}
+
+void Cube::setCoordonner(glm::vec3 coordonner)
+{
+	m_coordonner = vec3(round(coordonner.x), round(coordonner.y), round(coordonner.z));
 }
 

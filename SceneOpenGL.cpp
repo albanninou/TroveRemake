@@ -141,7 +141,7 @@ void SceneOpenGL::bouclePrincipale()
 
 	// Caméra mobile
 
-	Camera camera = Camera(vec3(-3, 3, -3), vec3(0, 0, 0), vec3(0, 1, 0), 0.2f, 0.1f);
+	Camera camera = Camera(vec3(0, 31, 0), vec3(1, 31, 1), vec3(0, 1, 0), 0.2f, 0.1f);
 	m_input.afficherPointeur(false);
 	m_input.capturerPointeur(true);
 
@@ -170,13 +170,26 @@ void SceneOpenGL::bouclePrincipale()
 		camera.deplacer(m_input);
 		camera.lookAt(modelview);
 
+		vec3 vecteur =normalize(camera.getPointCible() - camera.getPosition());
+		
+		
+		
+		vec3 distance = camera.getPosition()+vecteur ;
+
+		std::cout << "coordonner x : " << distance.x << " y : " << distance.y << " z : " << distance.z << std::endl;
+		cube2.setCoordonner(distance);
 		if (m_input.getBoutonUpSouris(1))
 		{
 
+			for (int i = 0; i < 5; i += 0.5) {
+				if (chunk.getCubeAt(camera.getPosition() + vecteur*vec3(i, i, i))->getType() != TYPE_AIR) {
 
-			std::cout << "collision " << std::endl;
-
-
+				}
+			}
+			
+			std::cout << "coordonner x : "<<distance.x<<" y : "<< distance.y<<" z : "<< distance.z << std::endl;
+			chunk.removeBlock(distance);
+			 
 		}
 		// Nettoyage de l'écran
 
@@ -206,8 +219,8 @@ void SceneOpenGL::bouclePrincipale()
 		//SDL_SetWindowTitle(m_fenetre, tempsEcoule);
 
 		// Si nécessaire, on met en pause le programme
-		//if (tempsEcoule < frameRate)
-			//SDL_Delay(frameRate - tempsEcoule);
+		if (tempsEcoule < frameRate)
+			SDL_Delay(frameRate - tempsEcoule);
 	}
 }
 
