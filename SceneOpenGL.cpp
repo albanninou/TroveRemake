@@ -5,7 +5,7 @@
 
 using namespace glm;
 
-
+SDL_Window *fenetre;
 // Constructeur de Destucteur
 
 SceneOpenGL::SceneOpenGL(std::string titreFenetre, int largeurFenetre, int hauteurFenetre) : m_titreFenetre(titreFenetre), m_largeurFenetre(largeurFenetre),
@@ -76,7 +76,7 @@ bool SceneOpenGL::initialiserFenetre()
 
 		return false;
 	}
-
+	fenetre = m_fenetre;
 	return true;
 }
 
@@ -112,10 +112,11 @@ bool SceneOpenGL::initGL()
 
 
 	// Activation du Depth Buffer
-	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_POLYGON_STIPPLE);
 
 	// Tout s'est bien passé, on retourne true
 
@@ -148,10 +149,10 @@ void SceneOpenGL::bouclePrincipale()
 
 	Chunk chunk = Chunk(vec3(0, 0, 0));
 	//Cube cube =  Cube(vec3(1,0,0), "Textures/Herbe.jpg");
-	Cube cube2 = Cube();
+	Cube cube2 = Cube(vec3(0,0,0), "Textures/selected.png");
 	cube2.setCoordonner(vec3(0, 0 ,- 1));
 	// Boucle principale
-
+	
 	while (!m_input.terminer())
 	{
 		// On définit le temps de début de boucle
@@ -179,12 +180,14 @@ void SceneOpenGL::bouclePrincipale()
 
 		vec3 vecteur = normalize(camera.getPointCible() - camera.getPosition());
 
+		chunk.afficher(projection, modelview);
 
-
-		vec3 distance = camera.getPosition() + vecteur;
+		
 		vec3 tempo;
-		for (float i = 0; i < 5; i= i+0.5f) {
-			 tempo = camera.getPosition() + vecteur*vec3(i, i, i);
+		vec3 distance;
+		for (float i = 0; i < 5; i= i+0.01f) {
+			distance = vec3(i, i, i);
+			 tempo = camera.getPosition() + vecteur*distance;
 			if ((chunk.getCubeAt(tempo)->getType()) != TYPE_AIR && (chunk.getCubeAt(camera.getPosition() + vecteur*vec3(i, i, i))->getType()) != -2) {
 				cube2.setCoordonner(tempo);
 				cube2.afficher(projection, modelview);
@@ -194,16 +197,23 @@ void SceneOpenGL::bouclePrincipale()
 
 		if (m_input.getBoutonUpSouris(1))
 		{
-
-			std::cout << "coordonner x : " << distance.x << " y : " << distance.y << " z : " << distance.z << std::endl;
 			chunk.removeBlock(tempo);
-
+		}
+		if (m_input.getBoutonUpSouris(3))
+		{
+			for (float i = distance.x; i > 2; i = i - 0.01f) {
+				tempo = camera.getPosition() + vecteur*vec3(i, i, i);
+				if ((chunk.getCubeAt(tempo)->getType()) == TYPE_AIR) {
+					chunk.addBlock(tempo, TYPE_GRASS);
+					break;
+				}
+			}
 		}
 
 
 		//cube.afficher(projection, modelview);
 		//cube2.afficher(projection, modelview);
-		chunk.afficher(projection, modelview);
+		
 		// Désactivation du shader
 
 		glUseProgram(0);

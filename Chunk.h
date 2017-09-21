@@ -16,7 +16,7 @@ public:
 	void afficher(glm::mat4 &projection, glm::mat4 &modelview);
 	void removeBlock(vec3 coordonner);
 	Cube* getCubeAt(vec3 coordonner);
-
+	void addBlock(vec3 coordonner, int type);
 protected:
 	bool containAir(vec3 coordonner);
 	Cube *m_cubes[CHUNK_SIZE_HAUT][CHUNK_SIZE_BASE][CHUNK_SIZE_BASE];

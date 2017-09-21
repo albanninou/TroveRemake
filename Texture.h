@@ -16,7 +16,7 @@ public:
 
 	GLuint getID() const;
 	void setFichierImage(const std::string &fichierImage);
-
+	
 
 private:
 

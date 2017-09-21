@@ -135,6 +135,9 @@ int Cube::getType()
 void Cube::setType(int type)
 {
 	m_type = type;
+	if (type != TYPE_AIR) {
+		m_texture = getTexture(type);
+	}
 }
 
 void Cube::setCoordonner(glm::vec3 coordonner)

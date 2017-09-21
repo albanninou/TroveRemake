@@ -118,6 +118,12 @@ Cube* Chunk::getCubeAt(vec3 coordonner)
 	return m_cubes[(int)coordonner.y][(int)coordonner.x][(int)coordonner.z];
 }
 
+void Chunk::addBlock(vec3 coordonner, int type)
+{
+	m_cubes[(int)coordonner.y][(int)coordonner.x][(int)coordonner.z]->setType(type);
+	m_cubesAfficher[indexCubesAir++] = m_cubes[(int)coordonner.y][(int)coordonner.x][(int)coordonner.z];
+}
+
 bool Chunk::containAir(vec3 coordonner)
 {
 	int i = 0;
