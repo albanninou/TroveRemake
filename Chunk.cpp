@@ -4,6 +4,7 @@ Chunk::Chunk(vec3 coordonner)
 {
 	m_coordonner = coordonner;
 	indexCubesAir = 0;
+	std::cout << "Chunk at  :  x : " << m_coordonner.x<<" y : "<< m_coordonner.y << " z : "<< m_coordonner.z<< std::endl;
 	generateChunk();
 }
 
@@ -19,15 +20,15 @@ Chunk::~Chunk()
 }
 
 void Chunk::generateChunk()
-{
+{	
 	for (int i = 0; i < CHUNK_SIZE_HAUT; i++) {
 		for (int x = 0; x < CHUNK_SIZE_BASE; x++) {
 			for (int y = 0; y < CHUNK_SIZE_BASE; y++) {
 				if (i>30) {
-					m_cubes[i][x][y] = new Cube(vec3(x, i, y), TYPE_AIR);
+					m_cubes[i][x][y] = new Cube(vec3(x+ m_coordonner.x, i, y + m_coordonner.z), TYPE_AIR);
 				}
 				else {
-					m_cubes[i][x][y] = new Cube(vec3(x, i, y), TYPE_GRASS);
+					m_cubes[i][x][y] = new Cube(vec3(x + m_coordonner.x, i, y + m_coordonner.z), TYPE_GRASS);
 				}
 			}
 		}
@@ -98,13 +99,7 @@ void Chunk::afficher(glm::mat4 & projection, glm::mat4 & modelview)
 	for (int i = 0; i < indexCubesAir; i++) {
 		m_cubesAfficher[i]->afficher(projection,modelview);
 	}
-	/*for (int i = 0; i < CHUNK_SIZE_HAUT; i++) {
-		for (int x = 0; x < CHUNK_SIZE_BASE; x++) {
-			for (int y = 0; y < CHUNK_SIZE_BASE; y++) {	
-				m_cubes[i][x][y]->afficher(projection, modelview);
-			}
-		}
-	}*/
+	
 }
 
 void Chunk::removeBlock(vec3 coordonner)
@@ -122,6 +117,11 @@ void Chunk::addBlock(vec3 coordonner, int type)
 {
 	m_cubes[(int)coordonner.y][(int)coordonner.x][(int)coordonner.z]->setType(type);
 	m_cubesAfficher[indexCubesAir++] = m_cubes[(int)coordonner.y][(int)coordonner.x][(int)coordonner.z];
+}
+
+vec3 Chunk::getCoordonner()
+{
+	return m_coordonner;
 }
 
 bool Chunk::containAir(vec3 coordonner)

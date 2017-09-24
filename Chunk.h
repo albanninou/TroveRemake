@@ -17,6 +17,7 @@ public:
 	void removeBlock(vec3 coordonner);
 	Cube* getCubeAt(vec3 coordonner);
 	void addBlock(vec3 coordonner, int type);
+	vec3 getCoordonner();
 protected:
 	bool containAir(vec3 coordonner);
 	Cube *m_cubes[CHUNK_SIZE_HAUT][CHUNK_SIZE_BASE][CHUNK_SIZE_BASE];

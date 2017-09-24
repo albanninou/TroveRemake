@@ -7,6 +7,8 @@
 #include "Cube.h"
 #include "Chunk.h"
 
+#define CHUNK_VIEW		3
+
 class SceneOpenGL
 {
 public:
@@ -20,7 +22,7 @@ public:
 
 
 private:
-
+	Chunk* m_chunk[CHUNK_VIEW][CHUNK_VIEW];
 	std::string m_titreFenetre;
 	int m_largeurFenetre;
 	int m_hauteurFenetre;

@@ -142,12 +142,17 @@ void SceneOpenGL::bouclePrincipale()
 
 	// Caméra mobile
 
-	Camera camera = Camera(vec3(0, 32, 0), vec3(1, 31, 1), vec3(0, 1, 0), 0.2f, 0.1f);
+	Camera camera = Camera(vec3(CHUNK_SIZE_BASE/2, 32, CHUNK_SIZE_BASE/2), vec3(1, 31, 1), vec3(0, 1, 0), 0.2f, 0.1f);
 	m_input.afficherPointeur(false);
 	m_input.capturerPointeur(true);
 
+	for(int i =0;i < CHUNK_VIEW;i++){
+		for (int j = 0; j < CHUNK_VIEW; j++) {
+			m_chunk[i][j] = new Chunk(vec3(CHUNK_SIZE_BASE*(i-1), 0, CHUNK_SIZE_BASE*(j - 1)));
+		}
+	}
 
-	Chunk chunk = Chunk(vec3(0, 0, 0));
+	
 	//Cube cube =  Cube(vec3(1,0,0), "Textures/Herbe.jpg");
 	Cube cube2 = Cube(vec3(0,0,0), "Textures/selected.png");
 	cube2.setCoordonner(vec3(0, 0 ,- 1));
@@ -170,9 +175,9 @@ void SceneOpenGL::bouclePrincipale()
 
 		camera.deplacer(m_input);
 		camera.lookAt(modelview);
-		if (chunk.getCubeAt(vec3(camera.getPosition().x, camera.getPosition().y-1, camera.getPosition().z))->getType() != TYPE_AIR) {
+		/*if (chunk.getCubeAt(vec3(camera.getPosition().x, camera.getPosition().y-1, camera.getPosition().z))->getType() != TYPE_AIR) {
 			camera.cancelMove();
-		}
+		}*/
 		
 		// Nettoyage de l'écran
 
@@ -180,39 +185,46 @@ void SceneOpenGL::bouclePrincipale()
 
 		vec3 vecteur = normalize(camera.getPointCible() - camera.getPosition());
 
-		chunk.afficher(projection, modelview);
+		if (camera.getPosition().x > m_chunk[CHUNK_VIEW / 2 + 1][CHUNK_VIEW / 2 + 1]->getCoordonner().x + CHUNK_SIZE_BASE) {
 
+		}
+
+		//chunk.afficher(projection, modelview);
+		for (int i = 0; i < CHUNK_VIEW; i++) {
+			for (int j = 0; j < CHUNK_VIEW; j++) {
+				m_chunk[i][j]->afficher(projection, modelview);
+			}
+		}
 		
 		vec3 tempo;
 		vec3 distance;
 		for (float i = 0; i < 5; i= i+0.01f) {
 			distance = vec3(i, i, i);
 			 tempo = camera.getPosition() + vecteur*distance;
-			if ((chunk.getCubeAt(tempo)->getType()) != TYPE_AIR && (chunk.getCubeAt(camera.getPosition() + vecteur*vec3(i, i, i))->getType()) != -2) {
+			/*if ((chunk.getCubeAt(tempo)->getType()) != TYPE_AIR && (chunk.getCubeAt(camera.getPosition() + vecteur*vec3(i, i, i))->getType()) != -2) {
 				cube2.setCoordonner(tempo);
 				cube2.afficher(projection, modelview);
 				break;
-			}
+			}*/
 		}
 
 		if (m_input.getBoutonUpSouris(1))
 		{
-			chunk.removeBlock(tempo);
+			//chunk.removeBlock(tempo);
 		}
 		if (m_input.getBoutonUpSouris(3))
 		{
 			for (float i = distance.x; i > 2; i = i - 0.01f) {
 				tempo = camera.getPosition() + vecteur*vec3(i, i, i);
-				if ((chunk.getCubeAt(tempo)->getType()) == TYPE_AIR) {
+				/*if ((chunk.getCubeAt(tempo)->getType()) == TYPE_AIR) {
 					chunk.addBlock(tempo, TYPE_GRASS);
 					break;
-				}
+				}*/
 			}
 		}
 
 
-		//cube.afficher(projection, modelview);
-		//cube2.afficher(projection, modelview);
+
 		
 		// Désactivation du shader
 
