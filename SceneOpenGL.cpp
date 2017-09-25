@@ -148,7 +148,7 @@ void SceneOpenGL::bouclePrincipale()
 
 	for(int i =0;i < CHUNK_VIEW;i++){
 		for (int j = 0; j < CHUNK_VIEW; j++) {
-			m_chunk[i][j] = new Chunk(vec3(CHUNK_SIZE_BASE*(i-1), 0, CHUNK_SIZE_BASE*(j - 1)));
+			m_chunk[i][j] = new Chunk(vec3(CHUNK_SIZE_BASE*(i- CHUNK_VIEW / 2), 0, CHUNK_SIZE_BASE*(j - CHUNK_VIEW / 2)));
 		}
 	}
 
@@ -184,9 +184,75 @@ void SceneOpenGL::bouclePrincipale()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		vec3 vecteur = normalize(camera.getPointCible() - camera.getPosition());
-
-		if (camera.getPosition().x > m_chunk[CHUNK_VIEW / 2 + 1][CHUNK_VIEW / 2 + 1]->getCoordonner().x + CHUNK_SIZE_BASE) {
-
+		//std::cout << "Chunk at  :  x : " << camera.getPosition().x << " y : " << camera.getPosition().y << " z : " << camera.getPosition().z << std::endl;
+		if (camera.getPosition().x > m_chunk[CHUNK_VIEW / 2][CHUNK_VIEW / 2]->getCoordonner().x + CHUNK_SIZE_BASE) {
+			std::cout << "remove" << std::endl;
+			for (int i = 0; i < CHUNK_VIEW; i++) {
+				delete m_chunk[0][i];
+			}
+			for (int i = 0; i < CHUNK_VIEW; i++) {
+				for (int j = 0; j < CHUNK_VIEW; j++) {
+					if (i != CHUNK_VIEW - 1) {
+						m_chunk[i][j] = m_chunk[i + 1][j];
+					}
+					else {
+						m_chunk[i][j] = new Chunk(vec3(m_chunk[i-1][j]->getCoordonner().x+CHUNK_SIZE_BASE, 0, m_chunk[i-1][j]->getCoordonner().z ));
+					}
+					}
+			}
+		}
+		if (camera.getPosition().x < m_chunk[CHUNK_VIEW / 2][CHUNK_VIEW / 2]->getCoordonner().x ) {
+			std::cout << "remove" << std::endl;
+			for (int i = 0; i < CHUNK_VIEW; i++) {
+				delete m_chunk[CHUNK_VIEW-1][i];
+			}
+			for (int i = 0; i < CHUNK_VIEW; i++) {
+				for (int j = 0; j < CHUNK_VIEW; j++) {
+					if (i != CHUNK_VIEW-1) {
+						
+						m_chunk[CHUNK_VIEW-i-1][CHUNK_VIEW-1-j] = m_chunk[CHUNK_VIEW-i-2 ][CHUNK_VIEW-1-j];
+					}
+					else {
+						m_chunk[0][j] = new Chunk(vec3(m_chunk[1][j]->getCoordonner().x - CHUNK_SIZE_BASE, 0, m_chunk[1][j]->getCoordonner().z));
+					}
+				}
+			}
+		}
+		if (camera.getPosition().z < m_chunk[CHUNK_VIEW / 2][CHUNK_VIEW / 2]->getCoordonner().z) {
+			std::cout << "remove" << std::endl;
+			for (int i = 0; i < CHUNK_VIEW; i++) {
+				delete m_chunk[i][CHUNK_VIEW - 1];
+			}
+			for (int i = 0; i < CHUNK_VIEW; i++) {
+				for (int j = 0; j < CHUNK_VIEW; j++) {
+					if (i != CHUNK_VIEW - 1) {
+						std::cout << "x : " << CHUNK_VIEW - j - 1 << " y: " << CHUNK_VIEW - 1 - i << std::endl;
+						std::cout << "x : " << CHUNK_VIEW - j - 1 << " y: " << CHUNK_VIEW - 2 - i<< std::endl;
+						m_chunk[CHUNK_VIEW - 1 - j][CHUNK_VIEW - i - 1] = m_chunk[CHUNK_VIEW - 1 - j][CHUNK_VIEW - i - 2];
+					}
+					else {
+						m_chunk[j][0] = new Chunk(vec3(m_chunk[j][1]->getCoordonner().x,0, m_chunk[j][1]->getCoordonner().z - CHUNK_SIZE_BASE));
+					}
+				}
+			}
+		}
+		if (camera.getPosition().z > m_chunk[CHUNK_VIEW / 2][CHUNK_VIEW / 2]->getCoordonner().z) {
+			std::cout << "remove" << std::endl;
+			/*for (int i = 0; i < CHUNK_VIEW; i++) {
+				delete m_chunk[i][0];
+			}
+			for (int i = 0; i < CHUNK_VIEW; i++) {
+				for (int j = 0; j < CHUNK_VIEW; j++) {
+					if (i != 0) {
+						std::cout << "x : " << j  << " y: " << i << std::endl;
+						std::cout << "x : " << j  << " y: " <<  i+1 << std::endl;
+						m_chunk[j][i] = m_chunk[j][ i + 2];
+					}
+					else {
+						m_chunk[j][CHUNK_VIEW-1] = new Chunk(vec3(m_chunk[j][CHUNK_VIEW - 2]->getCoordonner().x, 0, m_chunk[j][CHUNK_VIEW - 2]->getCoordonner().z + CHUNK_SIZE_BASE));
+					}
+				}
+			}*/
 		}
 
 		//chunk.afficher(projection, modelview);

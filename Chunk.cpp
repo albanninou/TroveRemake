@@ -17,6 +17,14 @@ Chunk::Chunk()
 
 Chunk::~Chunk()
 {
+	std::cout << "remove Block" << std::endl;
+	for (int i = 0; i < CHUNK_SIZE_HAUT; i++) {
+		for (int x = 0; x < CHUNK_SIZE_BASE; x++) {
+			for (int y = 0; y < CHUNK_SIZE_BASE; y++) {
+				delete m_cubes[i][x][y];	
+			}
+		}
+	}
 }
 
 void Chunk::generateChunk()
